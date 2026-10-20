@@ -1,3 +1,0 @@
-# SPA fallback for Netlify / Cloudflare Pages.
-# Existing files (assets, bio/index.html) are served first.
-/*    /index.html   200

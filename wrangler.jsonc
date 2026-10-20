@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers 静态站点配置：先 pnpm build 生成 dist，再由 wrangler deploy 上传
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "yujielin-uk",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./dist",
+    // 单页应用：找不到的路径交给 index.html（代替原来的 _redirects 规则）
+    "not_found_handling": "single-page-application"
+  }
+}

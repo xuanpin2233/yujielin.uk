@@ -133,3 +133,6 @@ dist
 .DS_Store
 
 todo.md
+
+# Cloudflare wrangler
+.wrangler/

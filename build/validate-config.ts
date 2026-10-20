@@ -1,0 +1,542 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
+import { load } from 'js-yaml'
+import { z } from 'zod'
+import { loadEnv, type Plugin } from 'vite'
+import { resolveOgShots } from './og-images.ts'
+import { substituteEnv } from './env-substitute.ts'
+
+const LOCALES = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP'] as const
+const LOBBY_INDEX_KEY = /^memorialLobbies\[(\d+)\]$/
+
+const nonEmpty = z.string().min(1, '不能为空')
+
+const manifestIconSchema = z.strictObject({
+  src: nonEmpty,
+  sizes: nonEmpty,
+  purpose: z.string().optional()
+})
+
+const manifestScreenshotSchema = z.strictObject({
+  src: nonEmpty,
+  sizes: nonEmpty,
+  type: z.string().optional(),
+  label: z.string().optional(),
+  platform: z.string().optional(),
+  form_factor: z.enum(['narrow', 'wide']).optional()
+})
+
+const manifestSchema = z.strictObject({
+  name: nonEmpty,
+  short_name: nonEmpty,
+  description: z.string().optional(),
+  theme_color: nonEmpty,
+  start_url: nonEmpty,
+  id: nonEmpty,
+  // 未配置时构建期默认 standalone（见 vite.config.ts pwaManifest）
+  display: z.enum(['fullscreen', 'standalone', 'minimal-ui', 'browser']).optional(),
+  // 未配置时构建期默认引用 og-images 生成的 1280×720 截图；自定义须放 public/
+  screenshots: z.array(manifestScreenshotSchema).optional(),
+  icons: z.array(manifestIconSchema).min(1, '至少需要一个图标')
+})
+
+const dockItemSchema = z.strictObject({
+  name: nonEmpty,
+  href: z.string().optional(),
+  imgSrc: z.string().optional(),
+  iconfont: z.string().optional()
+})
+
+const contactItemSchema = z.strictObject({
+  name: nonEmpty,
+  href: z.string().optional(),
+  imgSrc: z.string().optional(),
+  iconfont: z.string().optional()
+})
+
+const dialogueDisplaySchema = z.strictObject({
+  mode: z.enum(['auto', 'manual']).optional(),
+  bone: z.string().optional(),
+  offsetX: z.number().optional(),
+  offsetY: z.number().optional(),
+  side: z.enum(['auto', 'left', 'right']).optional(),
+  x: z.union([z.number(), nonEmpty]).optional(),
+  y: z.union([z.number(), nonEmpty]).optional(),
+  position: z.enum(['left', 'right']).optional()
+})
+
+const boneRangeSchema = z.strictObject({
+  bone: z.string().optional(),
+  range: z.number().optional(),
+  minX: z.number().optional(),
+  maxX: z.number().optional(),
+  minY: z.number().optional(),
+  maxY: z.number().optional(),
+  smoothTime: z.number().optional()
+})
+
+const dragBoneSchema = z.strictObject({
+  bone: nonEmpty,
+  radius: z.number().optional(),
+  range: z.number().optional(),
+  smoothTime: z.number().optional(),
+  minX: z.number().optional(),
+  maxX: z.number().optional(),
+  minY: z.number().optional(),
+  maxY: z.number().optional(),
+  anchor: z.string().optional(),
+  clips: z
+    .strictObject({
+      start: nonEmpty,
+      chain: nonEmpty,
+      end: nonEmpty
+    })
+    .optional()
+})
+
+const interactionsSchema = z.strictObject({
+  gaze: z.union([z.literal(false), boneRangeSchema]).optional(),
+  pat: z.union([z.literal(false), boneRangeSchema]).optional(),
+  dragBones: z.union([z.literal(false), z.array(dragBoneSchema)]).optional()
+})
+
+const memorialLobbySchema = z.strictObject({
+  name: nonEmpty,
+  path: nonEmpty,
+  skel: nonEmpty,
+  atlas: nonEmpty,
+  voice: z.record(z.string(), z.string()).optional(),
+  offset: z.number().optional(),
+  dialogueDisplay: dialogueDisplaySchema.optional(),
+  interactions: interactionsSchema.optional()
+})
+
+const bioStudentSchema = z.strictObject({
+  name: nonEmpty,
+  path: nonEmpty,
+  skel: nonEmpty,
+  atlas: nonEmpty
+})
+
+const bioBtnSchema = z.strictObject({
+  name: nonEmpty,
+  path: nonEmpty
+})
+
+/** QQ songmid / 酷狗 hash：YAML 里不加引号时可能是数字，统一转字符串 */
+const musicIdString = z.union([nonEmpty, z.number()]).transform((v) => String(v))
+
+const kuwoEntrySchema = z.union([
+  z.number(),
+  z.strictObject({
+    id: z.number(),
+    name: z.string().optional(),
+    artist: z.string().optional(),
+    cover: z.string().optional()
+  })
+])
+
+const localMusicEntrySchema = z.strictObject({
+  url: nonEmpty,
+  name: z.string().optional(),
+  artist: z.string().optional(),
+  cover: z.string().optional()
+})
+
+/** Spotify 歌曲/歌单链接；仅供构建期 `pnpm spotify:sync` 读取，运行时忽略 */
+const spotifyUrlSchema = z
+  .string()
+  .regex(
+    /^https?:\/\/open\.spotify\.com\/(?:intl-[a-z-]+\/)?(?:track|playlist)\/[A-Za-z0-9]+/,
+    '须为 open.spotify.com 的 track 或 playlist 链接'
+  )
+
+const musicGroupSchema = z.strictObject({
+  netease: z.array(z.number()).optional(),
+  neteasePlaylist: z.array(z.number()).optional(),
+  tencent: z.array(musicIdString).optional(),
+  kugou: z.array(musicIdString).optional(),
+  kuwo: z.array(kuwoEntrySchema).optional(),
+  local: z.array(localMusicEntrySchema).optional(),
+  spotify: z.array(spotifyUrlSchema).optional()
+})
+
+const bioConfigSchema = z
+  .strictObject({
+    student: z.array(bioStudentSchema).optional(),
+    btn: z.array(bioBtnSchema).optional(),
+    bth: z.array(bioBtnSchema).optional()
+  })
+  .transform(({ student, btn, bth }) => ({
+    student,
+    btn: btn ?? bth
+  }))
+
+const siteConfigSchema = z.strictObject({
+  title: nonEmpty,
+  description: z.string().optional(),
+  favicon: nonEmpty,
+  author: nonEmpty,
+  keywords: z.string().optional(),
+  url: z.string().optional(),
+  ICP: z.string().optional(),
+  gongan: z.string().optional(),
+  iconfont: z.string().optional(),
+  manifest: manifestSchema.optional(),
+  level: z.number().optional(),
+  exp: z.number().optional(),
+  nextExp: z.number().optional(),
+  gold: z.number().optional(),
+  pyroxene: z.number().optional(),
+  dock: z.array(dockItemSchema).optional(),
+  contact: z.array(contactItemSchema).optional(),
+  task: z
+    .strictObject({
+      name: nonEmpty,
+      href: z.string().optional()
+    })
+    .optional(),
+  banner: z
+    .strictObject({
+      musicID: z.array(z.number()).optional(),
+      music: musicGroupSchema.optional()
+    })
+    .optional(),
+  memorialLobbies: z.array(memorialLobbySchema).optional(),
+  bio: bioConfigSchema.optional(),
+  og: z
+    .strictObject({
+      home: z.string().optional(),
+      bio: z.string().optional()
+    })
+    .optional()
+})
+
+const localeOverlaySchema = z.strictObject({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  keywords: z.string().optional(),
+  author: z.string().optional(),
+  favicon: z.string().optional(),
+  iconfont: z.string().optional(),
+  url: z.string().optional(),
+  ICP: z.string().optional(),
+  gongan: z.string().optional(),
+  manifest: z
+    .strictObject({
+      name: z.string().optional(),
+      short_name: z.string().optional(),
+      description: z.string().optional(),
+      theme_color: z.string().optional(),
+      start_url: z.string().optional(),
+      id: z.string().optional(),
+      icons: z.array(manifestIconSchema).optional()
+    })
+    .optional(),
+  level: z.number().optional(),
+  exp: z.number().optional(),
+  nextExp: z.number().optional(),
+  gold: z.number().optional(),
+  pyroxene: z.number().optional(),
+  dock: z.array(dockItemSchema.partial()).optional(),
+  contact: z.array(contactItemSchema.partial()).optional(),
+  task: z
+    .strictObject({
+      name: z.string().optional(),
+      href: z.string().optional()
+    })
+    .optional(),
+  banner: z
+    .strictObject({
+      musicID: z.array(z.number()).optional(),
+      music: musicGroupSchema.optional()
+    })
+    .optional(),
+  memorialLobbies: z.array(memorialLobbySchema.partial()).optional(),
+  icp: z
+    .strictObject({
+      title: z.string().optional()
+    })
+    .optional(),
+  translate: z.record(z.string(), z.string()).optional(),
+  bio: z
+    .strictObject({
+      student: z.array(bioStudentSchema.partial()).optional(),
+      btn: z.array(bioBtnSchema.partial()).optional(),
+      bth: z.array(bioBtnSchema.partial()).optional()
+    })
+    .optional()
+})
+
+const lobbyIndexOverlaySchema = z.strictObject({
+  name: z.string().optional(),
+  path: z.string().optional(),
+  skel: z.string().optional(),
+  atlas: z.string().optional(),
+  voice: z.record(z.string(), z.string()).optional(),
+  offset: z.number().optional(),
+  dialogueDisplay: dialogueDisplaySchema.optional(),
+  interactions: interactionsSchema.optional()
+})
+
+function formatPath(issuePath: PropertyKey[]): string {
+  if (issuePath.length === 0) return '(root)'
+  return issuePath.reduce<string>((acc, key) => {
+    if (typeof key === 'number') return `${acc}[${key}]`
+    return acc ? `${acc}.${String(key)}` : String(key)
+  }, '')
+}
+
+function formatIssue(file: string, issue: z.core.$ZodIssue, prefix = ''): string {
+  const loc = [prefix, formatPath(issue.path)].filter((p) => p && p !== '(root)').join('.')
+  let message = issue.message
+  if (issue.code === 'unrecognized_keys' && 'keys' in issue) {
+    const keys = issue.keys.map((k) => `'${k}'`).join(', ')
+    message = `未知字段 ${keys}（可能是拼写错误）`
+  }
+  return `  ${file} → ${loc || '(root)'}: ${message}`
+}
+
+function collectZodIssues(file: string, error: z.ZodError, prefix = ''): string[] {
+  return error.issues.map((issue) => formatIssue(file, issue, prefix))
+}
+
+function loadYaml(filePath: string): unknown {
+  const text = fs.readFileSync(filePath, 'utf8')
+  return load(text)
+}
+
+function publicFile(root: string, urlPath: string): string {
+  return path.join(root, 'public', urlPath.replace(/^\//, '').replace(/\//g, path.sep))
+}
+
+function checkPublicFile(root: string, urlPath: string, label: string): string | null {
+  if (!urlPath || /^https?:\/\//i.test(urlPath) || urlPath.startsWith('data:')) return null
+  const abs = publicFile(root, urlPath)
+  if (!fs.existsSync(abs)) {
+    return `  ${label}: 找不到文件 public/${urlPath.replace(/^\//, '')}`
+  }
+  return null
+}
+
+function checkLobbyAssets(
+  root: string,
+  file: string,
+  field: string,
+  lobby: { path?: string; skel?: string; atlas?: string }
+): string[] {
+  const errors: string[] = []
+  const { path: lobbyPath, skel, atlas } = lobby
+  if (lobbyPath && !lobbyPath.endsWith('/')) {
+    errors.push(`  ${file} → ${field}.path: 应以 '/' 结尾（当前会与 skel/atlas 文件名直接拼接）`)
+  }
+  if (lobbyPath && skel) {
+    const miss = checkPublicFile(root, lobbyPath + skel, `${file} → ${field}.skel`)
+    if (miss) errors.push(miss)
+  }
+  if (lobbyPath && atlas) {
+    const miss = checkPublicFile(root, lobbyPath + atlas, `${file} → ${field}.atlas`)
+    if (miss) errors.push(miss)
+  }
+  return errors
+}
+
+export function validateProjectConfig(
+  root: string,
+  env: Record<string, string | undefined>
+): string[] {
+  const errors: string[] = []
+  const configPath = path.join(root, '_config.yaml')
+
+  if (!fs.existsSync(configPath)) {
+    return [`  _config.yaml: 文件不存在`]
+  }
+
+  const bioDir = path.join(root, 'bio')
+  if (!fs.existsSync(bioDir) || !fs.statSync(bioDir).isDirectory()) {
+    errors.push('  bio/: 目录不存在（请创建 bio/{locale}.md，例如 bio/en-US.md）')
+  } else {
+    const bioFiles = fs.readdirSync(bioDir).filter((name) => name.toLowerCase().endsWith('.md'))
+    if (bioFiles.length === 0) {
+      errors.push('  bio/: 至少需要一个 .md 文件（缺语言时回退到 en-US）')
+    }
+  }
+
+  for (const rel of [
+    'public/img/loading/bg.png',
+    'public/img/loading/avatar1.png',
+    'public/img/loading/avatar2.png',
+    'public/img/loading/avatar3.png',
+    'public/img/loading/avatar4.png',
+    'public/js/iconfont.js',
+    'public/transfrom.webm',
+    'public/transfrom.mov'
+  ]) {
+    if (!fs.existsSync(path.join(root, rel))) {
+      errors.push(`  ${rel.replaceAll('\\', '/')}: 找不到文件（加载屏本地素材，勿改回 Yostar CDN）`)
+    }
+  }
+
+  let raw: unknown
+  try {
+    raw = loadYaml(configPath)
+  } catch (error) {
+    errors.push(
+      `  _config.yaml: YAML 解析失败 — ${error instanceof Error ? error.message : String(error)}`
+    )
+    return errors
+  }
+
+  // ${VAR} 占位符替换（与 vite.config.ts 构建期读取、env-substitute 运行时注入同一来源），
+  // zod 校验与资源存在性检查均针对替换后的值
+  raw = substituteEnv(raw, env).value
+
+  // OG 源图：_config.yaml 的 og.home / og.bio 可覆盖默认 shots/zh/（社交分享卡片用 sharp 从此裁切）
+  const ogShots = resolveOgShots((raw as { og?: { home?: string; bio?: string } } | null)?.og)
+  for (const [field, rel] of [
+    ['og.home', ogShots.home],
+    ['og.bio', ogShots.bio]
+  ] as const) {
+    if (!fs.existsSync(path.join(root, ...rel.split('/')))) {
+      errors.push(
+        `  ${rel.replaceAll('\\', '/')}: 找不到文件（社交分享卡片 OG 图源，可在 _config.yaml 的 ${field} 自定义）`
+      )
+    }
+  }
+
+  const parsed = siteConfigSchema.safeParse(raw)
+  if (!parsed.success) {
+    errors.push(...collectZodIssues('_config.yaml', parsed.error))
+  }
+
+  const config = parsed.success ? parsed.data : ((raw as Record<string, unknown>) ?? {})
+  const lobbies = Array.isArray(config.memorialLobbies) ? config.memorialLobbies : []
+
+  if (parsed.success) {
+    const faviconMiss = checkPublicFile(root, parsed.data.favicon, '_config.yaml → favicon')
+    if (faviconMiss) errors.push(faviconMiss)
+
+    for (const icon of parsed.data.manifest?.icons ?? []) {
+      const miss = checkPublicFile(root, icon.src, `_config.yaml → manifest.icons src=${icon.src}`)
+      if (miss) errors.push(miss)
+    }
+
+    // 用户自定义的 PWA 截图须存在于 public/（缺省截图由 og-images 构建期生成，不在此校验）
+    for (const shot of parsed.data.manifest?.screenshots ?? []) {
+      const miss = checkPublicFile(
+        root,
+        shot.src,
+        `_config.yaml → manifest.screenshots src=${shot.src}`
+      )
+      if (miss) errors.push(miss)
+    }
+
+    parsed.data.dock?.forEach((item, i) => {
+      if (!item.imgSrc) return
+      const miss = checkPublicFile(root, item.imgSrc, `_config.yaml → dock[${i}].imgSrc`)
+      if (miss) errors.push(miss)
+    })
+
+    lobbies.forEach((lobby, i) => {
+      errors.push(...checkLobbyAssets(root, '_config.yaml', `memorialLobbies[${i}]`, lobby))
+    })
+
+    parsed.data.bio?.student?.forEach((student, i) => {
+      errors.push(...checkLobbyAssets(root, '_config.yaml', `bio.student[${i}]`, student))
+    })
+
+    parsed.data.bio?.btn?.forEach((card, i) => {
+      const miss = checkPublicFile(root, card.path, `_config.yaml → bio.btn[${i}].path`)
+      if (miss) errors.push(miss)
+    })
+
+    // local 音乐：url/cover 指向 public/ 的路径须真实存在（外链 http(s):// 不校验）
+    parsed.data.banner?.music?.local?.forEach((entry, i) => {
+      const missUrl = checkPublicFile(
+        root,
+        entry.url,
+        `_config.yaml → banner.music.local[${i}].url`
+      )
+      if (missUrl) errors.push(missUrl)
+      if (entry.cover) {
+        const missCover = checkPublicFile(
+          root,
+          entry.cover,
+          `_config.yaml → banner.music.local[${i}].cover`
+        )
+        if (missCover) errors.push(missCover)
+      }
+    })
+  }
+
+  const lobbyCount = lobbies.length
+
+  for (const locale of LOCALES) {
+    const rel = `src/locales/${locale}.yaml`
+    const localePath = path.join(root, rel)
+    if (!fs.existsSync(localePath)) {
+      errors.push(`  ${rel}: 文件不存在`)
+      continue
+    }
+
+    let localeRaw: unknown
+    try {
+      localeRaw = loadYaml(localePath)
+    } catch (error) {
+      errors.push(
+        `  ${rel}: YAML 解析失败 — ${error instanceof Error ? error.message : String(error)}`
+      )
+      continue
+    }
+
+    if (!localeRaw || typeof localeRaw !== 'object' || Array.isArray(localeRaw)) {
+      errors.push(`  ${rel}: 必须是对象`)
+      continue
+    }
+
+    const overlay: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(localeRaw as Record<string, unknown>)) {
+      const match = key.match(LOBBY_INDEX_KEY)
+      if (match) {
+        const index = Number(match[1])
+        if (index >= lobbyCount) {
+          errors.push(
+            `  ${rel} → ${key}: 索引超出 _config.yaml 中 memorialLobbies 长度（${lobbyCount}）`
+          )
+        }
+        const overlayResult = lobbyIndexOverlaySchema.safeParse(value)
+        if (!overlayResult.success) {
+          errors.push(...collectZodIssues(rel, overlayResult.error, key))
+        }
+      } else {
+        overlay[key] = value
+      }
+    }
+
+    const localeResult = localeOverlaySchema.safeParse(overlay)
+    if (!localeResult.success) {
+      errors.push(...collectZodIssues(rel, localeResult.error))
+    }
+  }
+
+  return errors
+}
+
+export function assertProjectConfig(root: string, env: Record<string, string | undefined>): void {
+  const errors = validateProjectConfig(root, env)
+  if (errors.length === 0) return
+
+  throw new Error(`\n配置校验失败，构建已中止。请修正以下问题后重试：\n\n${errors.join('\n')}\n`)
+}
+
+/** 启动 / 构建时校验 _config.yaml、语言包与 bio/ 简介，字段拼写错误直接失败 */
+export function configValidatePlugin(): Plugin {
+  return {
+    name: 'vite-plugin-config-validate',
+    configResolved(config) {
+      // loadEnv 合并 .env* 与 process.env（后者优先），与 vite.config.ts 的注入来源一致
+      assertProjectConfig(config.root, loadEnv(config.mode, config.root, ''))
+    }
+  }
+}

@@ -1,0 +1,172 @@
+# English Translation File
+
+# Website title - Displayed in browser tab
+title: 'Baiyu Archive'
+
+# Website description - Used for SEO and social media sharing
+description: '白鱼''s Blue Archive-style personal homepage'
+
+# Website keywords - Used for SEO, comma-separated
+keywords: 'Blue Archive, 白鱼, Personal Homepage'
+
+# PWA application name configuration
+manifest:
+  # PWA application full name
+  name: 'Baiyu Archive'
+
+  # PWA application short name - Used for desktop display
+  short_name: 'Baiyu Archive'
+
+  # PWA application description
+  description: '白鱼''s Blue Archive-style personal homepage'
+
+# Website author display name
+author: '白鱼'
+
+# Bottom project display area - Project name translations
+dock:
+  - name: '白鱼 on GitHub'
+
+# Left contact methods area - Contact method name translations
+contact:
+  - name: 'Email'
+  - name: GitHub
+
+# Task button configuration - Task button display text translation
+task:
+  name: 'GitHub'
+
+# ICP备案信息标题
+icp:
+  title: ICP Filing Info
+
+# Memorial lobby character display name translations
+memorialLobbies:
+  - name: Aris(Battle)
+  - name: Kei
+  - name: Hina(Swimsuit)
+
+# Aris (Battle) voice dialogue
+memorialLobbies[0]:
+  voice:
+    CH0334_MemorialLobby_1_1: Hehe. Sensei, were you surprised?
+    CH0334_MemorialLobby_1_2: I wanted to enjoy this night sky with you, Sensei... so I called you here.
+    CH0334_MemorialLobby_2_1: It really is... absolutely beautiful.
+    CH0334_MemorialLobby_2_2: Whether it's Aris's world, or worlds I haven't visited yet... I'm sure there are many more wonderful things like this.
+    CH0334_MemorialLobby_3_1: But, it's so strange.
+    CH0334_MemorialLobby_3_2: The world is this beautiful, yet why do people still fight each other?
+    CH0334_MemorialLobby_4: Just like that starry sky, the beauty of this world is surely enough to share with everyone...
+    CH0334_MemorialLobby_5: ...As expected, Aris still doesn't understand.
+
+# Kei Voice Dialogue
+memorialLobbies[1]:
+  voice:
+    CH0335_MemorialLobby_1_1: Don't worry.
+    CH0335_MemorialLobby_1_2: I will not disappear.
+    CH0335_MemorialLobby_2_1: Quite the opposite.
+    CH0335_MemorialLobby_2_2: No matter what means I must use, I will survive.
+    CH0335_MemorialLobby_3_1: As long as you do not abandon this world, Sensei.
+    CH0335_MemorialLobby_3_2: Then I will not give up until the very end.
+    CH0335_MemorialLobby_4_1: So rest assured... absolutely, everything will be fine.
+    CH0335_MemorialLobby_4_2: I will always be here.
+    CH0335_MemorialLobby_5_1: I will only say this here... I—
+    CH0335_MemorialLobby_5_2: Do not hate you, Sensei.
+
+# Hina (Swimsuit) voice dialogue
+memorialLobbies[2]:
+  voice:
+    CH0063_MemorialLobby_1_1: Honestly, I've never understood people's fascination with the ocean.
+    CH0063_MemorialLobby_1_2: While everyone's having a good time, I've never felt the same way.
+    CH0063_MemorialLobby_2_1: It's blurry underwater, and I get nervous when my feet can't touch the ground.
+    CH0063_MemorialLobby_2_2: Sensei, have you ever felt that way before?
+    CH0063_MemorialLobby_3_1: I find it eerie... The way the sea is just a bottomless well at night.
+    CH0063_MemorialLobby_3_2: I hate how it feels like I'll be sucked in just looking at it.
+    CH0063_MemorialLobby_4_1: But, you know, I think I'm beginning to understand. At least a little bit.
+    CH0063_MemorialLobby_4_2: The ocean can be so beautiful.
+    CH0063_MemorialLobby_5_1: It's a new feeling but it's interesting too.
+    CH0063_MemorialLobby_5_2: Thank you, Sensei...for being here with me. And for everything you've taught me.
+
+# Common interface translation strings
+translate:
+  about: About
+  buildVersion: Build
+  info: Info
+  ifSkip: Skip?
+  update: Sensei! The site has been updated. Refresh to view the newest content!
+  loadDegraded: Some resources failed to load after several attempts. You've entered with a degraded experience; check your network and refresh to retry.
+  ok: OK
+  cancel: Cancel
+  bio: Biography
+  bioTitle: Self Introduction
+  prevPage: Previous
+  nextPage: Next
+  skipIntro: Skip intro
+  skip: Skip
+  backToLobby: Back to lobby
+  l2dExpand: Full-screen Live2D view
+  l2dCollapse: Exit full-screen view
+  carouselPage: Page {n}
+  walletApBattery: 'Battery sync: {percent}%'
+  walletApRecover: Recovers 1 AP every 6 minutes
+  walletGold: '{hours} hours spent together'
+  walletPyroxene: 'Daily sign-in streak: {days}'
+  musicUnknownSong: Unknown song
+  musicUnknownArtist: Unknown artist
+  musicPlay: Play
+  musicPause: Pause
+  musicNext: Next track
+  musicProgress: Playback progress
+  settings: Options
+  settingsAudio: Volume
+  settingsPresentation: Presentation
+  settingsLanguage: Language
+  settingsLanguageDesc: Choose the interface language. "Follow browser" matches your system language automatically.
+  settingsLanguageAuto: Follow browser
+  settingsOn: 'On'
+  settingsOff: 'Off'
+  settingsVolume: Volume
+  settingsMute: Mute
+  settingsVoice: Voice
+  settingsBgm: BGM
+  settingsIntro: Opening cutscene
+  settingsIntroDesc: Switching characters manually always plays their own entrance.
+  settingsIntroAlways: Every visit
+  settingsIntroOnce: First visit only
+  settingsClickFx: Click effect
+  settingsClickFxDesc: Blue Archive style effect when you click the page.
+  settingsLobbyArrowKeys: Arrow keys
+  settingsLobbyArrowKeysDesc: When the lobby HUD is visible, press ← / → to switch memorial lobby characters (same as the on-screen arrows; ignored in full-screen mode or while typing).
+  settingsReducedMotion: Reduced motion is enabled in your system, so presentation options are inactive.
+  guidePrev: Previous
+  guideNext: Next
+  guideSkip: Skip
+  guideDone: Done
+  guideReplay: Site guide
+  guideReplayDesc: Replay the lobby feature tour. It plays automatically on your first visit and never repeats after that.
+  guideReplayAction: Replay guide
+  guideStep1Title: Level card
+  guideStep1Desc: Your level and EXP live here. Tap the card to open the profile page.
+  guideStep2Title: Wallet
+  guideStep2Desc: AP recovers 1 every 6 minutes, credits accumulate with time spent here, and pyroxene is claimed on your first visit each day. Hover or tap a card for details.
+  guideStep3Title: Settings
+  guideStep3Desc: Volume, presentation, language and about are all here. Want to see this guide again? It is under Settings → Presentation.
+  guideStep4Title: Task sign
+  guideStep4Desc: Tapping plays a transition and opens the task link (such as the site owner's blog) in a new tab.
+  guideStep5Title: Music banner
+  guideStep5Desc: Play or skip tracks. Drag the progress bar to seek — or focus it and use ← / → and Home / End on a keyboard.
+  guideStep6Title: Full-screen view
+  guideStep6Desc: Hide the HUD and enjoy the memorial lobby Live2D. Tap this button again — or tap anywhere — to exit.
+  guideStep7Title: Contact
+  guideStep7Desc: The site owner's social and contact links. Tapping also plays a transition and opens a new tab.
+  guideStep8Title: Filing info
+  guideStep8Desc: ICP and public security filing info. Tapping opens the official lookup site directly, without the transition.
+  guideStep9Title: Dock
+  guideStep9Desc: Recommended project links along the bottom, plus a clock in the corner.
+  guideStep10Title: Switch character
+  guideStep10Desc: Tap the side arrows to switch memorial lobby characters — or press ← / → on a keyboard (toggle in Settings → Presentation).
+  guideStep11Title: Hidden interactions
+  guideStep11Desc: Tap the character for dialogue and voice lines. Try patting her head — and her gaze follows your finger or cursor.
+
+bio:
+  btn:
+    - name: Blue Archive

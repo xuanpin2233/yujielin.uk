@@ -1,0 +1,173 @@
+# 日本語翻訳ファイル
+# Japanese Translation File
+
+# ウェブサイトタイトル - ブラウザタブに表示されるタイトル
+title: '白鱼アーカイブ'
+
+# ウェブサイト説明 - SEOとソーシャルメディア共有に使用
+description: '白鱼のブルーアーカイブ風個人ホームページ'
+
+# ウェブサイトキーワード - SEOに使用、コンマ区切り
+keywords: 'ブルーアーカイブ,白鱼,個人ホームページ'
+
+# PWAアプリケーション名設定
+manifest:
+  # PWAアプリケーション完全名
+  name: '白鱼アーカイブ'
+
+  # PWAアプリケーション短名 - デスクトップ表示に使用
+  short_name: '白鱼アーカイブ'
+
+  # PWAアプリケーション説明
+  description: '白鱼のブルーアーカイブ風個人ホームページ'
+
+# ウェブサイト著者表示名
+author: '白鱼'
+
+# 底部プロジェクト表示エリア - プロジェクト名翻訳
+dock:
+  - name: '白鱼の GitHub'
+
+# 左側連絡先方法エリア - 連絡先方法名翻訳
+contact:
+  - name: 'メール'
+  - name: GitHub
+
+# タスクボタン設定 - タスクボタン表示テキスト翻訳
+task:
+  name: 'GitHub'
+
+# ICP備案情報タイトル
+icp:
+  title: 備案情報
+
+# 思い出ロビーキャラクター表示名翻訳
+memorialLobbies:
+  - name: アリス（臨戦）
+  - name: キー
+  - name: ヒナ（水着）
+
+# アリス（臨戦）
+memorialLobbies[0]:
+  voice:
+    CH0334_MemorialLobby_1_1: えへへ。先生、惊きましたか？
+    CH0334_MemorialLobby_1_2: 先生と一绪に、この夜空を见たくて……呼んだんです。
+    CH0334_MemorialLobby_2_1: とても……绮丽ですね。
+    CH0334_MemorialLobby_2_2: アリスの世界にも、まだ行ったことのない世界にも……きっとこんな绮丽なものがたくさんあると思うんです。
+    CH0334_MemorialLobby_3_1: でも……不思议です。
+    CH0334_MemorialLobby_3_2: 世界って、こんなに绮丽なのに……どうして人は争うんでしょう？
+    CH0334_MemorialLobby_4: あの星空みたいに、この世界は、みんなで分け合っても大丈夫なくらい美しいものであふれているのに……。
+    CH0334_MemorialLobby_5: ……やっぱり、アリスにはまだわかりません。
+
+# キー
+memorialLobbies[1]:
+  voice:
+    CH0335_MemorialLobby_1_1: 心配しないでください。
+    CH0335_MemorialLobby_1_2: 私が消えることはありません。
+    CH0335_MemorialLobby_2_1: むしろ、その逆ですね。
+    CH0335_MemorialLobby_2_2: 私は、どんな手を使ってでも生き残ってやるつもりですから。
+    CH0335_MemorialLobby_3_1: 先生がこの世界を見捨てないというのなら。
+    CH0335_MemorialLobby_3_2: 私だって最後まで、絶対に諦めたりしません。
+    CH0335_MemorialLobby_4_1: だから大丈夫……絶対、大丈夫です。
+    CH0335_MemorialLobby_4_2: 私はずっとここにいます。
+    CH0335_MemorialLobby_5_1: ここだけの話ですけど……私は――
+    CH0335_MemorialLobby_5_2: 先生のこと、嫌いじゃありませんから。
+
+# ヒナ水着版キャラクター音声対話翻訳
+memorialLobbies[2]:
+  voice:
+    CH0063_MemorialLobby_1_1: 何でみんな、そんなに海が好きなんだろう……って、いつもそう思ってた。
+    CH0063_MemorialLobby_1_2: みんなは楽しそうだけど、私はどうしても好きになれなくて…
+    CH0063_MemorialLobby_2_1: 水の中はよく見えないし、足が付がないと不安だし……
+    CH0063_MemorialLobby_2_2: 先生も、そう思ったことない？
+    CH0063_MemorialLobby_3_1: 特に夜の海は、まるで暗闇みたいに不気味で……
+    CH0063_MemorialLobby_3_2: 見てるだけで吸い込まれそうで、好きになれなかったけど……
+    CH0063_MemorialLobby_4_1: でも……今は、みんなの気持ちが少しだけ分かった気がする。
+    CH0063_MemorialLobby_4_2: 海って、こんなに綺麗だったのね。
+    CH0063_MemorialLobby_5_1: 不思議……今まで、こんな風に思ったことなかったのに。
+    CH0063_MemorialLobby_5_2: ありがとう，先生。一緒にいてくれて…… 色んなことを，教えてくれて。
+
+# 共通インターフェース翻訳文字列
+translate:
+  about: について
+  buildVersion: ビルド
+  info: 情報
+  ifSkip: スキップしますか？
+  update: 先生！サイトが更新されました。最新の内容を見るにはページを更新してください！
+  loadDegraded: 一部のリソースを複数回試行しても読み込めませんでした。デグラード状態でロビーに入ります。ネットワークを確認して再読み込みしてください。
+  ok: OK
+  cancel: キャンセル
+  bio: 自己紹介
+  bioTitle: 自己紹介
+  prevPage: 前へ
+  nextPage: 次へ
+  skipIntro: オープニングをスキップ
+  skip: スキップ
+  backToLobby: ロビーに戻る
+  l2dExpand: Live2D を全画面で鑑賞
+  l2dCollapse: 全画面鑑賞を終了
+  carouselPage: '{n} ページ目'
+  walletApBattery: バッテリー同期中（{percent}%）
+  walletApRecover: 6分ごとに1AP回復
+  walletGold: 一緒に過ごした時間：{hours}時間
+  walletPyroxene: '{days}日連続ログイン'
+  musicUnknownSong: 不明な曲
+  musicUnknownArtist: 不明なアーティスト
+  musicPlay: 再生
+  musicPause: 一時停止
+  musicNext: 次の曲
+  musicProgress: 再生位置
+  settings: 設定
+  settingsAudio: 音量
+  settingsPresentation: 演出
+  settingsLanguage: 言語
+  settingsLanguageDesc: 表示言語を選びます。「ブラウザに従う」はシステム言語に合わせます。
+  settingsLanguageAuto: ブラウザに従う
+  settingsOn: オン
+  settingsOff: オフ
+  settingsVolume: 音量
+  settingsMute: ミュート
+  settingsVoice: ボイス
+  settingsBgm: BGM
+  settingsIntro: オープニング演出
+  settingsIntroDesc: キャラクターを手動で切り替えたときは、常に各自の登場演出を再生します。
+  settingsIntroAlways: 毎回再生
+  settingsIntroOnce: 初回のみ
+  settingsClickFx: クリックエフェクト
+  settingsClickFxDesc: ページをクリックしたときのブルアカ風エフェクト。
+  settingsLobbyArrowKeys: 方向キーでキャラ切替
+  settingsLobbyArrowKeysDesc: ロビー HUD 表示中、キーボード ← / → でメモリアルロビーのキャラを切り替えます（画面下の矢印と同じ。全画面鑑賞中や入力中は無効）。
+  settingsReducedMotion: システムで「視差効果を減らす」が有効なため、演出の設定は適用されません。
+  guidePrev: 前へ
+  guideNext: 次へ
+  guideSkip: スキップ
+  guideDone: 完了
+  guideReplay: サイトガイド
+  guideReplayDesc: ロビー機能ツアーをもう一度見られます。初回訪問時に自動再生され、一度見ると以後は自動再生されません。
+  guideReplayAction: ガイドを再表示
+  guideStep1Title: レベルカード
+  guideStep1Desc: レベルと経験値の表示です。タップでプロフィールページへ移動します。
+  guideStep2Title: ウォレット
+  guideStep2Desc: AP は6分ごとに1回復、クレジットは滞在時間に応じて加算、青輝石は毎日初回アクセス時にログインボーナスとして受け取れます。ホバーまたはタップで詳細が見られます。
+  guideStep3Title: 設定
+  guideStep3Desc: 音量・演出・言語・このサイトについて、すべてここにあります。ガイドの再表示も「設定 → 演出」から。
+  guideStep4Title: ミッション札
+  guideStep4Desc: タップで演出を再生し、タスクのリンク（サイト主のブログなど）を新しいタブで開きます。
+  guideStep5Title: ミュージックバナー
+  guideStep5Desc: 再生・曲送りができます。シークバーをドラッグして移動、キーボードならフォーカス後に ← / → や Home / End でも操作できます。
+  guideStep6Title: 全画面鑑賞
+  guideStep6Desc: HUD を隠してメモリアルロビーの Live2D を鑑賞します。もう一度このボタンを押すか、画面をタップすると終了します。
+  guideStep7Title: 連絡先
+  guideStep7Desc: サイト主の SNS・連絡先です。タップで演出を再生し、新しいタブで開きます。
+  guideStep8Title: 届出情報
+  guideStep8Desc: ICP・公安ネットセキュリティ届出の情報です。タップで公式照会サイトへ直接移動します（演出なし）。
+  guideStep9Title: プロジェクト欄
+  guideStep9Desc: 画面下はおすすめプロジェクトのリンク、右下には現在時刻があります。
+  guideStep10Title: キャラ切り替え
+  guideStep10Desc: 両端の矢印をタップでメモリアルロビーのキャラを切り替えられます。キーボードの ← / → でも同じ（「設定 → 演出」でオフに可能）。
+  guideStep11Title: 隠し要素
+  guideStep11Desc: キャラをタップするとセリフとボイスが再生されます。頭を撫でてみてください——指やカーソルを動かすと視線が追いかけてきますよ。
+
+bio:
+  btn:
+    - name: ブルーアーカイブ

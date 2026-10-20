@@ -1,0 +1,170 @@
+# 中文翻译文件
+# Chinese Translation File
+
+# 网站标题 - 浏览器标签页显示的标题
+title: '白鱼档案'
+
+# 网站描述 - 用于搜索引擎优化和社交媒体分享
+description: '白鱼的《蔚蓝档案》风格个人主页'
+
+# 网站关键词 - 用于搜索引擎优化，逗号分隔
+keywords: '蔚蓝档案,白鱼,个人主页'
+
+# PWA应用名称配置
+manifest:
+  # PWA应用完整名称
+  name: '白鱼档案'
+
+  # PWA应用简短名称 - 用于桌面显示
+  short_name: '白鱼档案'
+
+  # PWA应用描述
+  description: '白鱼的《蔚蓝档案》风格个人主页'
+
+# 网站作者显示名称
+author: '白鱼'
+
+# 底部项目展示区域 - 项目名称翻译
+dock:
+  - name: '白鱼的 GitHub'
+
+# 左侧联系方式区域 - 联系方式名称翻译
+contact:
+  - name: '邮箱'
+  - name: GitHub
+
+# 任务按钮配置 - 任务按钮显示文本翻译
+task:
+  name: 'GitHub'
+
+# ICP备案信息标题
+icp:
+  title: 备案信息
+
+# 纪念大厅角色显示名称翻译
+memorialLobbies:
+  - name: 爱丽丝(临战)
+  - name: 凯伊
+  - name: 日奈(泳装)
+
+# 爱丽丝(临战)角色的语音对话翻译
+memorialLobbies[0]:
+  voice:
+    CH0334_MemorialLobby_1_1: 诶嘿嘿。老师，吓到了吗？
+    CH0334_MemorialLobby_1_2: 因为想要和老师欣赏这片夜空……所以呼唤了您。
+    CH0334_MemorialLobby_2_1: 真是……十分美丽呢。
+    CH0334_MemorialLobby_2_2: 爱丽丝的世界也好，还没有去过的世界也好……肯定还会有很多这样美好的事物。
+    CH0334_MemorialLobby_3_1: 但是，真不可思议。
+    CH0334_MemorialLobby_3_2: 世界是，这么地美丽，但为何人与人之间还是会有纷争呢？
+    CH0334_MemorialLobby_4: 就如同那片星空一般，这个世界的美好，明明已经可以多到和大家一起分享也没关系的程度了……
+    CH0334_MemorialLobby_5: ……果然，爱丽丝还是不能理解。
+# 凯伊角色的语音对话翻译
+memorialLobbies[1]:
+  voice:
+    CH0335_MemorialLobby_1_1: 别担心。
+    CH0335_MemorialLobby_1_2: 我是不会消失的。
+    CH0335_MemorialLobby_2_1: 恰恰相反。
+    CH0335_MemorialLobby_2_2: 不管用什么手段，我都会活下去。
+    CH0335_MemorialLobby_3_1: 如果老师不抛弃这个世界的话。
+    CH0335_MemorialLobby_3_2: 那我到最后也不会放弃的。
+    CH0335_MemorialLobby_4_1: 所以放心吧……绝对，没问题的。
+    CH0335_MemorialLobby_4_2: 我会一直在这里。
+    CH0335_MemorialLobby_5_1: 这话我只在这里说……我——
+    CH0335_MemorialLobby_5_2: 并不讨厌老师呢。
+# 日奈(泳装)角色的语音对话翻译
+memorialLobbies[2]:
+  voice:
+    CH0063_MemorialLobby_1_1: 为什么大家都那么喜欢大海呢？我一直在思考这个问题。
+    CH0063_MemorialLobby_1_2: 虽然大家看起来都很开心……可我却无论如何都喜欢不起来……
+    CH0063_MemorialLobby_2_1: 水面下的东西都看不太清楚，脚踩不到底也让我觉得放不下心……
+    CH0063_MemorialLobby_2_2: 老师不这么觉得吗？
+    CH0063_MemorialLobby_3_1: 特别是晚上，大海简直就像巨大的黑洞一样，
+    CH0063_MemorialLobby_3_2: 光是这样看着，就有种要被吸进去的感觉……
+    CH0063_MemorialLobby_4_1: 可是……现在我好像稍微明白一点……大家的心情了。
+    CH0063_MemorialLobby_4_2: 大海，原来这么美啊。
+    CH0063_MemorialLobby_5_1: 真是不可思议……我以前，从来没这么想过。
+    CH0063_MemorialLobby_5_2: 老师，谢谢你……陪在我的身边…… ……教会了我这么多事。
+# 通用界面翻译字符串
+translate:
+  about: 关于
+  buildVersion: 构建版本
+  info: 通知
+  ifSkip: 是否跳过？
+  update: 老师！站点已更新，刷新即可访问最新内容！
+  loadDegraded: 部分资源多次加载失败，已降级进入大厅；建议检查网络后刷新重试。
+  ok: 确认
+  cancel: 取消
+  bio: 个人简介
+  bioTitle: 自我介绍
+  prevPage: 上一页
+  nextPage: 下一页
+  skipIntro: 跳过开场动画
+  skip: 跳过
+  backToLobby: 返回大厅
+  l2dExpand: 全屏观赏 Live2D
+  l2dCollapse: 退出全屏观赏
+  carouselPage: 第 {n} 页
+  walletApBattery: 电量同步中（{percent}%）
+  walletApRecover: 每 6 分钟回复 1 点
+  walletGold: 已累计陪伴 {hours} 小时
+  walletPyroxene: 已连续签到 {days} 天
+  musicUnknownSong: 未知歌曲
+  musicUnknownArtist: 未知艺术家
+  musicPlay: 播放
+  musicPause: 暂停
+  musicNext: 下一首
+  musicProgress: 播放进度
+  settings: 设置
+  settingsAudio: 音量
+  settingsPresentation: 演出
+  settingsLanguage: 语言
+  settingsLanguageDesc: 选择界面显示语言。「跟随浏览器」将按系统语言自动匹配。
+  settingsLanguageAuto: 跟随浏览器
+  settingsOn: 开启
+  settingsOff: 关闭
+  settingsVolume: 音量
+  settingsMute: 静音
+  settingsVoice: 语音
+  settingsBgm: BGM
+  settingsIntro: 开场演出
+  settingsIntroDesc: 手动切换角色时始终播放各自的入场演出。
+  settingsIntroAlways: 每次进入
+  settingsIntroOnce: 仅首次访问
+  settingsClickFx: 点击特效
+  settingsClickFxDesc: 点击页面时的蔚蓝档案风格特效。
+  settingsLobbyArrowKeys: 方向键切换角色
+  settingsLobbyArrowKeysDesc: 大厅界面展开时，按键盘 ← / → 切换回忆大厅角色（与底部箭头相同；全屏观赏或输入框聚焦时不响应）。
+  settingsReducedMotion: 系统已开启「减少动效」，演出相关选项暂不生效。
+  guidePrev: 上一步
+  guideNext: 下一步
+  guideSkip: 跳过
+  guideDone: 完成
+  guideReplay: 站点引导
+  guideReplayDesc: 重新查看大厅功能导览。首次进入大厅会自动播放一次，看过后不再自动播放。
+  guideReplayAction: 重新查看引导
+  guideStep1Title: 等级卡
+  guideStep1Desc: 这里显示你的等级与经验。点按卡片可以进入个人简介页。
+  guideStep2Title: 钱包
+  guideStep2Desc: 体力每 6 分钟自动回复 1 点，信用点随陪伴时长累计，青辉石每日首次访问签到领取。悬停或点按卡片可看详细说明。
+  guideStep3Title: 设置
+  guideStep3Desc: 音量、演出、语言与关于都在这里。想再看一遍本引导，也在「设置 → 演出」里。
+  guideStep4Title: 任务牌
+  guideStep4Desc: 点按后播放转场动画，并在新标签页打开任务链接（比如站主的博客）。
+  guideStep5Title: 音乐横幅
+  guideStep5Desc: 可以播放 / 切歌。拖动进度条即可跳转；用键盘时，聚焦进度条后 ← / → 快退快进、Home / End 跳到首尾。
+  guideStep6Title: 全屏观赏
+  guideStep6Desc: 收起界面，静静欣赏回忆大厅的 Live2D。再点一下这个按钮、或点按画面即可退出。
+  guideStep7Title: 联系方式
+  guideStep7Desc: 站主的社交与联系方式。点按同样会走转场，并在新标签页打开。
+  guideStep8Title: 备案信息
+  guideStep8Desc: 备案与公安网安备案信息。点按可到对应官网查询，这组链接不走转场。
+  guideStep9Title: 项目栏
+  guideStep9Desc: 底部是站主推荐的项目链接，右下角是当前时间。
+  guideStep10Title: 切换角色
+  guideStep10Desc: 点两侧箭头可以切换回忆大厅角色；用键盘时 ← / → 也一样（可在「设置 → 演出」关闭）。
+  guideStep11Title: 隐藏互动
+  guideStep11Desc: 点按角色会触发对话台词与语音；摸摸头试试，移动手指（或光标）时她还会一直看着你哦。
+
+bio:
+  btn:
+    - name: 蔚蓝档案

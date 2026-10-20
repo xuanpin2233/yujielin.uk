@@ -1,0 +1,580 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, h } from 'vue'
+import { Modal } from '@arco-design/web-vue'
+import { useConfig } from '@/composables/useConfig'
+import Header from '@/components/Header.vue'
+import LevelCard from '@/components/LevelCard.vue'
+import Live2D from '@/components/Live2D.vue'
+import type { BioBtn } from '@/types/config'
+
+const BIO_FALLBACK_LOCALE = 'en-US'
+
+const bioPages = import.meta.glob('../../bio/*.md', {
+  eager: true,
+  import: 'default'
+}) as Record<string, string>
+
+const bioByLocale: Record<string, string> = {}
+for (const [key, html] of Object.entries(bioPages)) {
+  const locale = key.split(/[/\\]/).pop()?.replace(/\.md$/i, '') ?? ''
+  if (locale) bioByLocale[locale] = html
+}
+
+const { configs, currentLocale } = useConfig()
+
+const bioHtml = computed(
+  () =>
+    bioByLocale[currentLocale.value] ||
+    bioByLocale[BIO_FALLBACK_LOCALE] ||
+    Object.values(bioByLocale)[0] ||
+    ''
+)
+
+const currentConfig = computed(() => configs.value)
+
+// i18n 翻译
+const translate = computed(() => {
+  return currentConfig.value?.translate || {}
+})
+
+// bio 配置
+const bioConfig = computed(() => {
+  return currentConfig.value?.bio || {}
+})
+
+const bioButtons = computed(() => {
+  return bioConfig.value?.btn ?? bioConfig.value?.bth ?? []
+})
+
+// 打开图片 Dialog（命令式 Modal，无需响应式状态）
+const openImageDialog = (btn: BioBtn) => {
+  if (!btn.path) return
+
+  // 图片加载完成前显示加载占位（防止弹窗高度塌陷），完成后淡入；
+  // content 会被 Arco 包装为默认插槽在渲染期调用，loaded 的读写是响应式的
+  const loaded = ref(false)
+  const finish = () => {
+    loaded.value = true
+  }
+
+  Modal.open({
+    title: btn.name,
+    modalClass: 'card',
+    content: () =>
+      h('div', { class: ['card-image-box', { loaded: loaded.value }] }, [
+        !loaded.value && h('div', { class: 'card-image-loading' }),
+        h('img', {
+          src: btn.path,
+          alt: btn.name,
+          // 加载失败同样结束占位，露出 alt 兜底
+          onLoad: finish,
+          onError: finish
+        })
+      ]),
+    footer: false
+  })
+}
+
+// Carousel 指示器状态
+const currentSlide = ref(0)
+const carouselWrapper = ref<HTMLDivElement | null>(null)
+
+const updateCurrentSlide = () => {
+  if (!carouselWrapper.value) return
+  const scrollLeft = carouselWrapper.value.scrollLeft
+  const slideWidth = carouselWrapper.value.clientWidth
+  currentSlide.value = Math.round(scrollLeft / slideWidth)
+}
+
+const goToSlide = (index: number) => {
+  if (!carouselWrapper.value) return
+  const slideWidth = carouselWrapper.value.clientWidth
+  carouselWrapper.value.scrollTo({
+    left: slideWidth * index,
+    behavior: 'smooth'
+  })
+}
+
+// 轮播圆点的无障碍标签（i18n，{n} 占位符替换为页码）
+const slideLabel = (index: number) => {
+  const template = translate.value.carouselPage
+  const text = typeof template === 'string' ? template : 'Page {n}'
+  return text.replace('{n}', String(index + 1))
+}
+
+onMounted(() => {
+  // 监听 carousel 滚动
+  if (carouselWrapper.value) {
+    carouselWrapper.value.addEventListener('scroll', updateCurrentSlide)
+  }
+})
+
+onUnmounted(() => {
+  if (carouselWrapper.value) {
+    carouselWrapper.value.removeEventListener('scroll', updateCurrentSlide)
+  }
+})
+</script>
+
+<template>
+  <div class="bio-page">
+    <!-- 头栏 -->
+    <Header :title="translate.bio || ''" />
+    <!-- 背景 -->
+    <div class="bio-background"></div>
+    <!-- 主容器 -->
+    <div class="bio-container">
+      <!-- Carousel 指示器 (移动端: 圆点, 电脑端: 箭头)；原生 button，Enter/Space 由浏览器接管 -->
+      <div class="carousel-dots">
+        <button
+          v-for="index in 2"
+          :key="index - 1"
+          type="button"
+          class="dot"
+          :class="{ active: currentSlide === index - 1 }"
+          :aria-label="slideLabel(index - 1)"
+          @click="goToSlide(index - 1)"
+        ></button>
+      </div>
+
+      <!-- 电脑端箭头导航 -->
+      <div class="carousel-arrows">
+        <button
+          type="button"
+          class="arrow arrow-left css-cursor-hover-enabled"
+          :class="{ disabled: currentSlide === 0 }"
+          :disabled="currentSlide === 0"
+          :aria-label="translate.prevPage || ''"
+          @click="goToSlide(0)"
+        >
+          <img src="/l2d/arrow.png" alt="" />
+        </button>
+        <button
+          type="button"
+          class="arrow arrow-right css-cursor-hover-enabled"
+          :class="{ disabled: currentSlide === 1 }"
+          :disabled="currentSlide === 1"
+          :aria-label="translate.nextPage || ''"
+          @click="goToSlide(1)"
+        >
+          <img src="/l2d/arrow.png" alt="" />
+        </button>
+      </div>
+
+      <div ref="carouselWrapper" class="carousel-wrapper">
+        <div class="carousel-track">
+          <div class="carousel-slide" id="left">
+            <Live2D />
+            <!-- 等级卡片与大厅同源（LevelCard，简介页变体为静态展示） -->
+            <LevelCard variant="bio" />
+          </div>
+          <div class="carousel-slide" id="right">
+            <div class="intro-title">
+              <div class="title">{{ translate.bioTitle || '' }}</div>
+            </div>
+            <div class="intro-content">
+              <!-- v-html 渲染的是仓库 bio/{locale}.md（构建时编译为 HTML），
+                   仅项目维护者可修改；切勿改为渲染外部输入（XSS 风险） -->
+              <div class="content" v-html="bioHtml"></div>
+            </div>
+            <div class="btn-container">
+              <a-button
+                v-for="(btn, index) in bioButtons"
+                :key="index"
+                class="btn"
+                type="primary"
+                @click="openImageDialog(btn)"
+              >
+                {{ btn.name }}
+              </a-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.bio-page {
+  width: 100vw;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景 */
+.bio-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/shitim/Event_Main_Stage_Bg.png');
+  background-position: center;
+  background-size: cover;
+  z-index: -1;
+}
+
+.bio-container {
+  width: 100vw;
+  height: calc(
+    100dvh - clamp(120px, calc(7.5 * var(--u)), 100vw) - var(--safe-top) - var(--safe-bottom)
+  );
+  display: flex;
+  padding-top: clamp(60px, calc(3.75 * var(--u)), 100vw);
+}
+
+/* Carousel 结构 */
+.carousel-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  flex: 1;
+  min-width: 50%;
+  height: 100%;
+}
+
+/* Carousel 指示器 */
+.carousel-dots {
+  display: none;
+  position: absolute;
+  bottom: calc(20px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  gap: 10px;
+}
+
+.carousel-dots .dot {
+  /* 原生 button 的 UA 样式重置：视觉保持与 div 时代一致 */
+  appearance: none;
+  border: none;
+  padding: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: url('/cursors/link.cur'), pointer;
+  transition: background 0.3s;
+}
+
+.carousel-dots .dot.active {
+  background: #fff;
+}
+
+/* 电脑端箭头导航 */
+.carousel-arrows {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 10;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.carousel-arrows .arrow {
+  /* 原生 button 的 UA 样式重置：尺寸/动画由原 img 转移到 button 上 */
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  width: clamp(32px, calc(2 * var(--u)), 100vw);
+  height: auto;
+  pointer-events: auto;
+  transition: opacity 0.3s;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  animation: moveReverse 2s ease-in-out infinite;
+}
+
+.carousel-arrows .arrow img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.carousel-arrows .arrow-left {
+  animation: move 2s ease-in-out infinite;
+}
+
+.carousel-arrows .arrow.disabled {
+  opacity: 0.3;
+  /* !important 用于压过全局 .css-cursor-hover-enabled 的链接光标 */
+  cursor: url('/cursors/block.cur'), not-allowed !important;
+}
+
+@keyframes move {
+  0% {
+    transform: translateX(clamp(-10px, calc(-0.625 * var(--u)), 100vw));
+  }
+  50% {
+    transform: translateX(clamp(10px, calc(0.625 * var(--u)), 100vw));
+  }
+  100% {
+    transform: translateX(clamp(-10px, calc(-0.625 * var(--u)), 100vw));
+  }
+}
+
+@keyframes moveReverse {
+  0% {
+    transform: rotate(180deg) translateX(clamp(-10px, calc(-0.625 * var(--u)), 100vw));
+  }
+  50% {
+    transform: rotate(180deg) translateX(clamp(10px, calc(0.625 * var(--u)), 100vw));
+  }
+  100% {
+    transform: rotate(180deg) translateX(clamp(-10px, calc(-0.625 * var(--u)), 100vw));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-arrows .arrow {
+    animation: none;
+    transform: rotate(180deg) translateX(clamp(10px, calc(0.625 * var(--u)), 100vw));
+  }
+
+  .carousel-arrows .arrow-left {
+    transform: translateX(clamp(10px, calc(0.625 * var(--u)), 100vw));
+  }
+}
+
+.bio-container #left,
+.bio-container #right {
+  flex: 1;
+}
+
+#left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+/* 等级卡片样式已收敛进 LevelCard.vue（简介页变体含 768px 流内定位切换） */
+
+#right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro-title {
+  width: 80%;
+  color: #fff;
+  background-color: #003153;
+  transform: skewX(-10deg);
+  padding: clamp(10px, calc(0.625 * var(--u)), 100vw) clamp(20px, calc(1.25 * var(--u)), 100vw);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: clamp(8px, calc(0.5 * var(--u)), 100vw);
+}
+
+.intro-title::after {
+  content: '';
+  width: 80%;
+  height: 100%;
+  background: #0003;
+  position: absolute;
+  transform: skew(50deg);
+  border-radius: clamp(8px, calc(0.5 * var(--u)), 100vw);
+  z-index: -1;
+  transition: all 0.3s;
+}
+
+.intro-title .title {
+  font-size: clamp(32px, calc(2.0625 * var(--u)), 100vw);
+  transform: skewX(10deg);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+#right .intro-content {
+  width: 80%;
+  margin-top: clamp(20px, calc(1.25 * var(--u)), 100vw);
+  margin-bottom: clamp(20px, calc(1.25 * var(--u)), 100vw);
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: clamp(20px, calc(1.25 * var(--u)), 100vw);
+  background-color: #fff;
+  border-radius: clamp(8px, calc(0.5 * var(--u)), 100vw);
+  font-size: clamp(20px, calc(1.25 * var(--u)), 100vw);
+}
+
+#right .intro-content .content {
+  height: 101%;
+  overflow-y: auto;
+  font-size: clamp(24px, calc(1.5 * var(--u)), 100vw);
+  color: #003153;
+}
+
+#right .intro-content .content :deep(p) {
+  margin: 0 0 0.5em;
+}
+
+#right .intro-content .content :deep(ul),
+#right .intro-content .content :deep(ol) {
+  margin: 0.4em 0 0.8em;
+  padding-left: 1.25em;
+}
+
+#right .intro-content .content :deep(li) {
+  margin: 0.15em 0;
+}
+
+#right .intro-content .content :deep(img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.6em 0;
+}
+
+#right .intro-content .content::-webkit-scrollbar {
+  display: none;
+}
+
+#right .btn-container {
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  direction: rtl;
+  margin-top: auto;
+  gap: clamp(10px, calc(0.625 * var(--u)), 100vw);
+  margin-bottom: clamp(40px, calc(2.5 * var(--u)), 100vw);
+}
+
+#right .btn {
+  width: 100%;
+  filter: drop-shadow(
+    0px clamp(1px, calc(0.0625 * var(--u)), 100vw) clamp(2px, calc(0.125 * var(--u)), 100vw) #0004
+  );
+  padding: clamp(30px, calc(1.875 * var(--u)), 100vw) 0 !important;
+  font-size: clamp(24px, calc(1.5 * var(--u)), 100vw) !important;
+  border-radius: clamp(8px, calc(0.5 * var(--u)), 100vw) !important;
+}
+
+@media screen and (max-width: 768px) {
+  .carousel-arrows {
+    display: flex;
+  }
+  .bio-container {
+    flex-direction: column;
+    position: relative;
+  }
+
+  .carousel-dots {
+    display: flex;
+  }
+
+  .carousel-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .carousel-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track {
+    width: 200%;
+  }
+
+  .carousel-slide {
+    min-width: 50%;
+    scroll-snap-align: start;
+  }
+
+  /* 调整左侧内容 */
+  #left {
+    justify-content: end;
+  }
+
+  /* 调整右侧内容 */
+  #right {
+    justify-content: space-between;
+  }
+
+  #right .btn-container {
+    width: 80%;
+    position: relative;
+    margin-top: auto;
+  }
+}
+</style>
+
+<style>
+/* 图片弹窗：给定响应式宽度（覆盖 Arco 内联的默认 520px），
+   弹窗尺寸不再依赖图片是否加载完成 */
+.card.arco-modal {
+  width: min(92vw, 1200px) !important;
+}
+
+.card.arco-modal .arco-modal-body {
+  max-width: none !important;
+  max-height: calc(90vh - clamp(48px, calc(3 * var(--u)), 100vw)) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* 图片加载前按名片图约 2:1 的比例占位，加载完成后切换为图片自然高度 */
+.card.arco-modal .card-image-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 2 / 1;
+  max-height: inherit;
+}
+
+.card.arco-modal .card-image-box.loaded {
+  aspect-ratio: auto;
+}
+
+.card.arco-modal .card-image-box img {
+  width: 100%;
+  height: auto;
+  max-height: inherit;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card.arco-modal .card-image-box.loaded img {
+  opacity: 1;
+}
+
+/* 加载中转圈 */
+.card.arco-modal .card-image-loading {
+  position: absolute;
+  width: clamp(32px, calc(4 * var(--u)), 48px);
+  height: clamp(32px, calc(4 * var(--u)), 48px);
+  border: 3px solid #89d5fd33;
+  border-top-color: #89d5fd;
+  border-radius: 50%;
+  animation: card-image-spin 0.8s linear infinite;
+}
+
+@keyframes card-image-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

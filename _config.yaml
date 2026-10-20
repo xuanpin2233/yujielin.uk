@@ -1,0 +1,231 @@
+# 基础配置文件（所有语言通用）
+# Website Basic Configuration
+
+# 网站标题 - 浏览器标签页显示的标题
+title: 白鱼档案
+
+# 网站描述 - 用于搜索引擎优化和社交媒体分享
+description: 白鱼的个人主页
+
+# 网站图标路径 - 浏览器标签页显示的小图标
+favicon: /favicon144.png
+
+# 网站作者姓名
+author: 白鱼
+
+# 网站关键词 - 用于搜索引擎优化，逗号分隔
+keywords: '白鱼, Blue Archive, Personal Homepage'
+
+# 站点规范地址 - 用于拼接 og:image/og:url/canonical 的绝对 URL（社交分享卡片要求绝对地址），
+# 留空则 og:url/canonical 不输出、og:image 退回相对路径
+url: 'https://yujielin.uk'
+
+# ICP备案号 - 中国大陆备案信息，留空表示未备案
+# 值取自环境变量 SITE_ICP（本地写进 .env.local，部署时在 Vercel / EdgeOne Pages 等平台控制台配置；
+# 未设置则为空——备案号不宜提交进公开仓库，任意字段都可写 ${VAR} 占位符注入，见 README「环境变量注入」）
+ICP: ''
+# 公安备案号 - 中国大陆网站备案信息；值取自环境变量 SITE_GONGAN，未设置则为空
+gongan: ''
+
+# PWA配置 - 渐进式Web应用配置
+manifest:
+  # PWA应用完整名称
+  name: 白鱼档案
+
+  # PWA应用简短名称 - 用于桌面显示
+  short_name: 白鱼
+
+  # PWA应用描述
+  description: 白鱼的个人主页
+
+  # PWA主题颜色 - 影响浏览器UI颜色
+  theme_color: '#128AFA'
+
+  # PWA启动URL - 应用启动时打开的页面
+  start_url: /
+
+  # PWA应用唯一标识符
+  id: Homepage
+
+  # PWA显示模式 - standalone 安装后以独立窗口打开（非浏览器标签页）
+  display: standalone
+
+  # PWA图标配置
+  icons:
+    # 大尺寸图标 - 用于桌面安装
+    - src: /favicon512.png
+      sizes: 512x512
+      purpose: any maskable
+
+    # 小尺寸图标 - 用于移动设备
+    - src: /favicon144.png
+      sizes: 144x144
+
+# 个人游戏等级信息
+level: 1 # 当前等级
+exp: 0 # 当前经验值
+nextExp: 100 # 升级所需经验值
+gold: 0 # 信用点初始值（首次访问后由本地「陪伴时长」累计接管）
+pyroxene: 0 # 青辉石初始值（首次访问后由本地「每日签到」累计接管）
+
+# Iconfont JS（默认用仓库内置 public/js/iconfont.js；可改为 iconfont.cn 自建项目的 JS 链接）
+iconfont: /js/iconfont.js
+
+# 底部项目展示区域 - 显示相关项目链接
+dock:
+  - name: 白鱼的 GitHub
+    href: 'https://github.com/xuanpin2233'
+    imgSrc: /img/fish.png
+
+# 左侧联系方式区域
+contact:
+  - name: Email
+    href: 'mailto:email@yujielin.uk'
+    iconfont: icon-email
+
+  - name: GitHub
+    href: 'https://github.com/xuanpin2233'
+    iconfont: icon-github
+
+# 任务按钮配置 - 页面左下角的任务按钮
+task:
+  # 任务按钮显示文本
+  name: GitHub
+  # 任务按钮链接地址
+  href: 'https://github.com/xuanpin2233'
+
+# Banner音乐播放器配置
+#
+# 支持多音源，全部合并进同一随机池；不配置的源直接省略即可。
+# 旧字段 banner.musicID（网易云单曲 ID 列表）仍然有效，会自动并入 music.netease。
+banner:
+  music:
+    # 网易云单曲 ID（网页分享链接 /song?id=xxxx 末尾数字）
+    netease:
+      - 2059151619
+      - 2098476758
+      - 2630220461
+      - 2630217054
+      - 2630217057
+      - 2099308172
+      - 2098477269
+      - 2098478097
+      - 2098478355
+      - 2098473565
+      - 2098473572
+      - 1840401436
+      - 2029212574
+      - 2612747239
+      - 2140425047
+      - 1832392174
+    # 网易云歌单 ID（/playlist?id=xxxx），启动时一次展开为单曲
+    # neteasePlaylist:
+    #   - 2619366284
+    # QQ 音乐 songmid（歌曲页 /songmid/xxxx；仅免费曲可播，VIP 自动跳过）
+    tencent:
+      - '000Zo47I2oO93g'
+    # 酷狗 hash（32 位十六进制；仅免费曲可播，VIP 自动跳过）
+    # kugou:
+    #   - 48C685F679FFC7CF08B8A8341CA9DB44
+    # 酷我 rid（纯数字；歌名/歌手/封面自动获取）
+    # kuwo:
+    #   - 3262923
+    # 直链/自托管音频（放 public/ 下；name/artist 必填，cover 可选）
+    # local:
+    #   - url: /music/demo.mp3
+    #     name: Demo
+    #     artist: Me
+    #     cover: /img/cover.png
+    # Spotify 歌曲/歌单链接（仅供构建期 pnpm spotify:sync 匹配用，运行时忽略）
+    # 脚本会到网易云/QQ 搜索同名曲并输出可粘贴的 netease/tencent 片段
+    # spotify:
+    #   - 'https://open.spotify.com/playlist/xxxxxxxxxxxxx'
+    #   - 'https://open.spotify.com/track/xxxxxxxxxxxxx'
+
+# Live2D角色配置
+#
+# 每个角色可选配 interactions 段定制交互动效（全部缺省时按骨名自动探测，一般无需配置；
+# 默认数值取自官方资源包解包的 SpineDragIK 参数， bone 缺省自动探测 Touch_Eye/Touch_Point 等）：
+#   interactions:
+#     # 视线跟随：按住拖动时角色看向触点，伴随 Look_01_M 表情；false 可禁用
+#     gaze: { bone: Touch_Eye, smoothTime: 0.15, minX: -48.1, maxX: 79.0, minY: -57.2, maxY: 98.3 }
+#     # 摸头：长按头部区域触发，头部跟随手指；false 可禁用
+#     pat: { bone: Touch_Point, smoothTime: 0.1, minX: -9.6, maxX: 13.5, minY: -33.9, maxY: 32.6 }
+#     # 捏脸/特殊骨骼拖拽；false 禁用，数组则覆盖自动探测结果（默认自动探测 Face_IK/Neck_IK/breast_* 等）
+#     dragBones:
+#       - { bone: breast_01L, radius: 120, range: 30, smoothTime: 0.08 }
+#       # 面部家族骨骼的命中判定默认在面部锚点；可用 anchor 自定义判定骨（如 { bone: Face_IK, anchor: face, radius: 170 }）
+#       # 也可带动画链（如 aris 的 HandFollow）：{ bone: HandFollow, radius: 180, clips: { start: HandFollow_01_M, chain: HandFollow_02_M, end: HandFollowEnd_01_M } }
+#
+# bone 为骨骼名；minX/maxX/minY/maxY 为拖拽钳制范围（骨架单位，相对基准位置的偏移，可用 range 做对称简写）；
+# radius 为按下命中半径；smoothTime 为平滑时间（秒，越小越跟手）
+#
+# 台词气泡默认自动跟随嘴/脸骨骼（无需配置）；可选：
+#   dialogueDisplay:
+#     mode: auto          # auto（默认）| manual（用 x/y/position 手动定位）
+#     bone: mouth         # 覆盖锚点骨骼名
+#     offsetX: 0          # 像素微调
+#     offsetY: -32
+#     side: auto          # auto | left | right
+memorialLobbies:
+  # 角色1 - Aris(Battle)
+  - name: Aris(Battle)
+    # Live2D模型文件路径
+    path: '/l2d/aris_battle/'
+    # 骨骼动画文件
+    skel: 'CH0334_home.skel'
+    # 纹理图集文件
+    atlas: 'CH0334_home.atlas'
+    # 角色在屏幕中的水平位置偏移（0-1之间）
+    offset: 0.5
+    # 台词气泡默认自动跟随嘴/脸骨骼；可选 dialogueDisplay: { offsetY: -40, side: auto, bone: mouth }
+    dialogueDisplay:
+      mode: auto # auto（默认）| manual（用 x/y/position 手动定位）
+      side: right # auto | left | right
+      offsetX: 40
+      offsetY: 40
+
+  # 角色2 - Kei
+  - name: Kei
+    # Live2D模型文件路径
+    path: '/l2d/kei/'
+    # 骨骼动画文件
+    skel: 'CH0335_home.skel'
+    # 纹理图集文件
+    atlas: 'CH0335_home.atlas'
+    # 角色在屏幕中的水平位置偏移（0-1之间）
+    offset: 0.62
+    dialogueDisplay:
+      mode: auto
+      side: right
+      offsetX: 40
+      offsetY: 40
+
+  # 角色3 - Hina
+  - name: Hina_swimsuit
+    # Live2D模型文件路径
+    path: '/l2d/hina_swimsuit/'
+    # 骨骼动画文件
+    skel: 'CH0063_home.skel'
+    # 纹理图集文件
+    atlas: 'CH0063_home.atlas'
+    # 角色在屏幕中的水平位置偏移（0-1之间）
+    offset: 0.68
+    dialogueDisplay:
+      mode: auto
+      side: left
+      offsetX: -100
+      offsetY: 40
+
+bio:
+  student:
+    - name: CH0334_spr
+      # Live2D模型文件路径
+      path: '/l2d/CH0334_spr/'
+      # 骨骼动画文件
+      skel: 'CH0334_spr.skel'
+      # 纹理图集文件
+      atlas: 'CH0334_spr.atlas'
+  btn:
+    - name: 蔚蓝档案
+      path: /img/card/ba.png

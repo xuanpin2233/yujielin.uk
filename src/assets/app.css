@@ -1,0 +1,139 @@
+/* 基础布局样式 */
+.app-main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 加载动画样式 */
+.loading-enter-active,
+.loading-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.loading-enter-from,
+.loading-leave-to {
+  opacity: 0;
+}
+
+/* 内容区域动画
+   位移距离 = 元素自身尺寸(100%) + 边缘偏移补偿，保证不同尺寸的元素
+   都能在相同时长内恰好完全移出视口（补偿值需覆盖对应组件的 top/left/right/bottom） */
+
+/* 向上离场：Level（top: clamp(40px, calc(2.5 * var(--u)))），补偿 max(48px, calc(3 * var(--u))) 覆盖该 top 值 */
+.up-enter-active,
+.up-leave-active {
+  transition: transform 0.3s ease-out;
+}
+
+.up-enter-from,
+.up-leave-to {
+  transform: translateY(calc(-100% - max(48px, calc(3 * var(--u)))));
+}
+
+.up-enter-to,
+.up-leave-from {
+  transform: translateY(0);
+}
+
+/* 向下离场：Footer（bottom: clamp(25px, calc(1.5625 * var(--u)))、移动端 50px）与
+   ICPBanner 移动端（bottom: clamp(180px, calc(11.25 * var(--u)))），补偿 max(190px, calc(12 * var(--u))) 覆盖最大 bottom 值 */
+.down-enter-active,
+.down-leave-active {
+  transition: transform 0.3s ease-out;
+}
+
+.down-enter-from,
+.down-leave-to {
+  transform: translateY(calc(100% + max(190px, calc(12 * var(--u))))) skew(-20deg);
+}
+
+.down-enter-to,
+.down-leave-from {
+  transform: translateY(0) skew(-20deg);
+}
+
+/* 向左离场：Contact（left: clamp(20px, calc(1.25 * var(--u)))）与
+   ICPBanner 桌面端（left: clamp(50px, calc(3.125 * var(--u)))），补偿 max(56px, calc(3.5 * var(--u))) 覆盖最大 left 值 */
+.left-enter-active,
+.left-leave-active {
+  transition: transform 0.3s ease-out;
+}
+
+.left-enter-from,
+.left-leave-to {
+  transform: translateX(calc(-100% - max(56px, calc(3.5 * var(--u)))));
+}
+
+.left-enter-to,
+.left-leave-from {
+  transform: translateX(0);
+}
+
+/* 向右离场：MusicBanner（right: clamp(20px, calc(1.25 * var(--u)))），补偿 max(40px, calc(1.5 * var(--u))) 覆盖该 right 值 */
+.right-enter-active,
+.right-leave-active {
+  transition: transform 0.3s ease-out;
+}
+
+.right-enter-from,
+.right-leave-to {
+  transform: translateX(calc(100% + max(40px, calc(1.5 * var(--u)))));
+}
+
+.right-enter-to,
+.right-leave-from {
+  transform: translateX(0);
+}
+
+/* 背景样式 */
+.app-background {
+  background-image: url('/shitim/Event_Main_Stage_Bg.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 幕布效果 */
+#curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+}
+
+/* 移动端响应式适配 */
+@media screen and (max-width: 495px) {
+  .down-enter-from,
+  .down-leave-to {
+    transform: translateY(calc(100% + max(190px, calc(12 * var(--u)))));
+  }
+
+  .down-enter-to,
+  .down-leave-from {
+    transform: translateY(0);
+  }
+
+  .up-enter-from,
+  .up-leave-to {
+    transform: translateY(calc(-100% - max(48px, calc(3 * var(--u))))) skew(-10deg);
+  }
+
+  .up-enter-to,
+  .up-leave-from {
+    transform: translateY(0) skew(-10deg);
+  }
+}

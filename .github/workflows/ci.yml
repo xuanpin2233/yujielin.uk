@@ -1,0 +1,31 @@
+# 最小 CI：format → typecheck → lint → 单测 → 构建（构建内置 Zod 配置校验）。
+# 第五轮曾定案「不上 CI」，第八轮经站主确认重新引入（仅门禁，不做部署）。
+# 包管理器 pnpm：pnpm/action-setup 读取 package.json 的 packageManager 字段定版本
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # 兜底超时：cn-font-split FFI 曾导致构建成功后进程不退出（见 build/build.ts），
+    # 若再出现类似挂起，15 分钟快速失败而非跑满默认 6 小时
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build

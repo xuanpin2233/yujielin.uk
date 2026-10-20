@@ -1,0 +1,172 @@
+# 繁體中文翻譯文件
+# Traditional Chinese Translation File
+
+# 網站標題 - 瀏覽器標籤頁顯示的標題
+title: '白鱼檔案'
+
+# 網站描述 - 用於搜尋引擎優化和社交媒體分享
+description: '白鱼的《蔚藍檔案》風格個人主頁'
+
+# 網站關鍵詞 - 用於搜尋引擎優化，逗號分隔
+keywords: '蔚藍檔案,白鱼,個人主頁'
+
+# PWA應用名稱配置
+manifest:
+  # PWA應用完整名稱
+  name: '白鱼檔案'
+
+  # PWA應用簡短名稱 - 用於桌面顯示
+  short_name: '白鱼檔案'
+
+  # PWA應用描述
+  description: '白鱼的《蔚藍檔案》風格個人主頁'
+
+# 網站作者顯示名稱
+author: '白鱼'
+
+# 底部項目展示區域 - 項目名稱翻譯
+dock:
+  - name: '白鱼的 GitHub'
+
+# 左側聯絡方式區域 - 聯絡方式名稱翻譯
+contact:
+  - name: '郵箱'
+  - name: GitHub
+
+# 任務按鈕配置 - 任務按鈕顯示文字翻譯
+task:
+  name: 'GitHub'
+
+# ICP備案信息標題
+icp:
+  title: 備案信息
+
+# 紀念大廳角色顯示名稱翻譯
+memorialLobbies:
+  - name: 愛麗絲(臨戰)
+  - name: 凱伊
+  - name: 日奈(泳裝)
+
+# 愛麗絲(臨戰)角色的語音對話翻譯
+memorialLobbies[0]:
+  voice:
+    CH0334_MemorialLobby_1_1: 欸嘿嘿。老師，嚇到了嗎？
+    CH0334_MemorialLobby_1_2: 因為想要和老師欣賞這片夜空……所以呼喚了您。
+    CH0334_MemorialLobby_2_1: 真是……十分美麗呢。
+    CH0334_MemorialLobby_2_2: 愛麗絲的世界也好，還沒有去過的世界也好……肯定還會有許多這樣美好的事物。
+    CH0334_MemorialLobby_3_1: 但是，真不可思議。
+    CH0334_MemorialLobby_3_2: 世界是，這麼地美麗，但為何人與人之間還是會有紛爭呢？
+    CH0334_MemorialLobby_4: 就如同那片星空一般，這個世界的美好，明明已經可以多到和大家一起分享也沒關係的程度了……
+    CH0334_MemorialLobby_5: ……果然，愛麗絲還是不能理解。
+# 凱伊角色的語音對話翻譯
+memorialLobbies[1]:
+  voice:
+    CH0335_MemorialLobby_1_1: 別擔心。
+    CH0335_MemorialLobby_1_2: 我是不會消失的。
+    CH0335_MemorialLobby_2_1: 恰恰相反。
+    CH0335_MemorialLobby_2_2: 不管用什麼手段，我都會活下去。
+    CH0335_MemorialLobby_3_1: 如果老師不拋棄這個世界的話。
+    CH0335_MemorialLobby_3_2: 那我到最後也不會放棄的。
+    CH0335_MemorialLobby_4_1: 所以放心吧……絕對，沒問題的。
+    CH0335_MemorialLobby_4_2: 我會一直在這裡。
+    CH0335_MemorialLobby_5_1: 這話我只在這裡說……我——
+    CH0335_MemorialLobby_5_2: 並不討厭老師呢。
+
+# 日奈(泳裝)角色的語音對話翻譯
+memorialLobbies[2]:
+  voice:
+    CH0063_MemorialLobby_1_1: 為什麼大家，都那麼喜歡大海呢……我一直都這麼思考著。
+    CH0063_MemorialLobby_1_2: 雖然大家看起來都很開心，但是我實在是沒辦法喜歡大海……
+    CH0063_MemorialLobby_2_1: 在水裡會看不清楚，腳又無法著地，會令人不安……
+    CH0063_MemorialLobby_2_2: 老師有沒有也這麼想過？
+    CH0063_MemorialLobby_3_1: 特別是夜晚的大海，就像黑暗一樣，很陰森……
+    CH0063_MemorialLobby_3_2: 光是注視著就好像會被吸進去，雖然沒辦法喜歡……
+    CH0063_MemorialLobby_4_1: 不過……現在，好像能稍微，理解大家的心情了。
+    CH0063_MemorialLobby_4_2: 原來大海，這麼美麗呀。
+    CH0063_MemorialLobby_5_1: 真神奇……至今為止，明明沒有這麼想過。
+    CH0063_MemorialLobby_5_2: 謝謝你，老師。陪伴在我身邊……
+
+# 通用介面翻譯字串
+translate:
+  about: 關於
+  buildVersion: 建置版本
+  info: 通知
+  ifSkip: 是否跳過？
+  update: 老師！站點已更新，刷新即可訪問最新內容！
+  loadDegraded: 部分資源多次載入失敗，已降級進入大廳；建議檢查網路後重新整理重試。
+  ok: 確認
+  cancel: 取消
+  bio: 個人簡介
+  bioTitle: 自我介紹
+  prevPage: 上一頁
+  nextPage: 下一頁
+  skipIntro: 跳過開場動畫
+  skip: 跳過
+  backToLobby: 返回大廳
+  l2dExpand: 全螢幕觀賞 Live2D
+  l2dCollapse: 退出全螢幕觀賞
+  carouselPage: 第 {n} 頁
+  walletApBattery: 電量同步中（{percent}%）
+  walletApRecover: 每 6 分鐘回復 1 點
+  walletGold: 已累計陪伴 {hours} 小時
+  walletPyroxene: 已連續簽到 {days} 天
+  musicUnknownSong: 未知歌曲
+  musicUnknownArtist: 未知藝術家
+  musicPlay: 播放
+  musicPause: 暫停
+  musicNext: 下一首
+  musicProgress: 播放進度
+  settings: 選項
+  settingsAudio: 音量
+  settingsPresentation: 演出
+  settingsLanguage: 語言
+  settingsLanguageDesc: 選擇介面顯示語言。「跟隨瀏覽器」將依系統語言自動匹配。
+  settingsLanguageAuto: 跟隨瀏覽器
+  settingsOn: 開啟
+  settingsOff: 關閉
+  settingsVolume: 音量
+  settingsMute: 靜音
+  settingsVoice: 語音
+  settingsBgm: BGM
+  settingsIntro: 開場演出
+  settingsIntroDesc: 手動切換角色時仍會播放各自的入場演出。
+  settingsIntroAlways: 每次進入
+  settingsIntroOnce: 僅首次造訪
+  settingsClickFx: 點擊特效
+  settingsClickFxDesc: 點擊頁面時的蔚藍檔案風格特效。
+  settingsLobbyArrowKeys: 方向鍵切換角色
+  settingsLobbyArrowKeysDesc: 大廳介面展開時，按鍵盤 ← / → 切換回憶大廳角色（與底部箭頭相同；全螢幕觀賞或輸入框聚焦時不響應）。
+  settingsReducedMotion: 系統已開啟「減少動態效果」，演出相關選項暫不生效。
+  guidePrev: 上一步
+  guideNext: 下一步
+  guideSkip: 跳過
+  guideDone: 完成
+  guideReplay: 站點引導
+  guideReplayDesc: 重新查看大廳功能導覽。首次進入大廳會自動播放一次，看過後不再自動播放。
+  guideReplayAction: 重新查看引導
+  guideStep1Title: 等級卡
+  guideStep1Desc: 這裡顯示你的等級與經驗。點按卡片可以進入個人簡介頁。
+  guideStep2Title: 錢包
+  guideStep2Desc: 體力每 6 分鐘自動回復 1 點，信用點隨陪伴時長累計，青輝石每日首次造訪簽到領取。懸停或點按卡片可看詳細說明。
+  guideStep3Title: 設定
+  guideStep3Desc: 音量、演出、語言與關於都在這裡。想再看一遍本引導，也在「設定 → 演出」裡。
+  guideStep4Title: 任務牌
+  guideStep4Desc: 點按後播放轉場動畫，並在新分頁打開任務連結（比如站主的部落格）。
+  guideStep5Title: 音樂橫幅
+  guideStep5Desc: 可以播放 / 切歌。拖曳進度條即可跳轉；用鍵盤時，聚焦進度條後 ← / → 快退快進、Home / End 跳到首尾。
+  guideStep6Title: 全螢幕觀賞
+  guideStep6Desc: 收起介面，靜靜欣賞回憶大廳的 Live2D。再點一下這個按鈕、或點按畫面即可退出。
+  guideStep7Title: 聯絡方式
+  guideStep7Desc: 站主的社交與聯絡方式。點按同樣會走轉場，並在新分頁打開。
+  guideStep8Title: 備案資訊
+  guideStep8Desc: 備案與公安網安備案資訊。點按可到對應官網查詢，這組連結不走轉場。
+  guideStep9Title: 專案欄
+  guideStep9Desc: 底部是站主推薦的專案連結，右下角是目前時間。
+  guideStep10Title: 切換角色
+  guideStep10Desc: 點兩側箭頭可以切換回憶大廳角色；用鍵盤時 ← / → 也一樣（可在「設定 → 演出」關閉）。
+  guideStep11Title: 隱藏互動
+  guideStep11Desc: 點按角色會觸發對話台詞與語音；摸摸頭試試，移動手指（或游標）時她還會一直看著你哦。
+
+bio:
+  btn:
+    - name: 蔚藍檔案
